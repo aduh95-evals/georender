@@ -1,5 +1,5 @@
 import { document } from "./dom.js";
-import { defaults } from "./defaults.js";
+import { defaults, featureStyle } from "./defaults.js";
 import { Map, View } from "ol";
 import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer.js";
 import { Vector as VectorSource } from "ol/source.js";
@@ -17,7 +17,7 @@ export class Renderer {
         const inputFiles = options.in || [];
         const outputFile = options.out || "out.png";
         const tile = defaults.tile[options.tile || 'osm'];
-        const style = defaults.style;
+        const style = featureStyle;
         const padding = defaults.padding;
     
         console.log('  width:', width);
