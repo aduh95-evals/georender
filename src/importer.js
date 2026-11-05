@@ -11,7 +11,9 @@ function readGpxStyle(feature, extensions) {
   const line = Array.from(extensions?.getElementsByTagNameNS('*', 'line') ?? [])
     .find(el => el.namespaceURI?.startsWith(GPX_STYLE_NS));
   if (!line) return;
-  const child = name => line.getElementsByTagNameNS(line.namespaceURI, name)[0]?.textContent.trim();
+  // Children are matched by local name: some writers (e.g. gpx.studio) emit them unprefixed,
+  // which puts them in the default GPX namespace instead of the gpx_style one.
+  const child = name => Array.from(line.children).find(el => el.localName === name)?.textContent.trim();
   const color = child('color');
   if (color && /^#?[0-9a-f]{6}$/i.test(color)) feature.set('lineColor', '#' + color.replace(/^#/, ''));
   const opacity = parseFloat(child('opacity'));
