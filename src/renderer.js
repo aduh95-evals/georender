@@ -8,7 +8,7 @@ import * as fs from 'fs';
 
 export class Renderer {
   async render(options) {
-    await new Promise(async (resolve, reject) => {
+    return await new Promise(async (resolve, reject) => {
       try {
         console.log('Rendering...');
 
@@ -73,8 +73,14 @@ export class Renderer {
         reject(err);
       }
     })
-    .then(() => console.log("Done!"))
-    .catch(err => console.error(err instanceof Error ? err.message : "\nTimeout!"))
+    .then(() => {
+      console.log("Done!");
+      return true;
+    })
+    .catch(err => {
+      console.error(err instanceof Error ? err.message : "\nTimeout!");
+      return false;
+    })
     ;
   }
 

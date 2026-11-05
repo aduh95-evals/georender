@@ -54,7 +54,7 @@ export class Application {
       return -1;
     }
 
-    await this.renderer.render({
+    const success = await this.renderer.render({
       width: +args.values.width,
       height: +args.values.height,
       in: args.values.in,
@@ -62,6 +62,6 @@ export class Application {
       tile: args.values.tile,
     });
 
-    return 0;
+    return success ? 0 : -1;
   }
 }
