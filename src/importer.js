@@ -5,6 +5,21 @@ import JSZip from 'jszip';
 import * as path from 'path';
 import * as fs from 'fs';
 
+const GPX_STYLE_NS = 'http://www.topografix.com/GPX/gpx_style/';
+
+function readGpxStyle(feature, extensions) {
+  const line = Array.from(extensions?.getElementsByTagNameNS('*', 'line') ?? [])
+    .find(el => el.namespaceURI?.startsWith(GPX_STYLE_NS));
+  if (!line) return;
+  // Children are matched by local name: some writers (e.g. gpx.studio) emit them unprefixed,
+  // which puts them in the default GPX namespace instead of the gpx_style one.
+  const child = name => Array.from(line.children).find(el => el.localName === name)?.textContent.trim();
+  const color = child('color');
+  if (color && /^#?[0-9a-f]{6}$/i.test(color)) feature.set('lineColor', '#' + color.replace(/^#/, ''));
+  const opacity = parseFloat(child('opacity'));
+  if (opacity >= 0 && opacity <= 1) feature.set('lineOpacity', opacity);
+}
+
 export class Importer {
   async importFile(filename) {
     if (fs.statSync(filename).isDirectory()) {
@@ -34,7 +49,7 @@ export class Importer {
   async importGPX(filename) {
     console.log('Import GPX: ' + filename);
     const data = fs.readFileSync(filename, { encoding: 'utf8', flag: 'r' });
-    const format = new GPX();
+    const format = new GPX({ readExtensions: readGpxStyle });
     return format.readFeatures(data, {
       featureProjection: 'EPSG:3857'
     });

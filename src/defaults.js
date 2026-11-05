@@ -1,5 +1,6 @@
 import { OSM, XYZ } from 'ol/source.js';
 import { Style, Icon, Circle, Fill, Stroke } from 'ol/style.js'
+import { asArray } from 'ol/color.js';
 
 const white   = 'rgba(255, 255, 255, 0.85)';
 const blue    = '#1267FF';
@@ -62,3 +63,20 @@ export const defaults = {
   padding: [50, 50, 50, 50],
   timeout: 30
 };
+
+const lineStyles = new Map();
+
+export function featureStyle(feature) {
+  const color = feature.get('lineColor');
+  if (!color) return defaults.style;
+  const opacity = feature.get('lineOpacity') ?? 1;
+  const key = `${color},${opacity}`;
+  if (!lineStyles.has(key)) {
+    const [r, g, b] = asArray(color);
+    lineStyles.set(key, [
+      defaults.style[0],
+      new Style({ stroke: new Stroke({ color: [r, g, b, opacity], width: 5 }) }),
+    ]);
+  }
+  return lineStyles.get(key);
+}
