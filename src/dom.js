@@ -3,10 +3,9 @@
  */
 
 import { performance } from 'perf_hooks';
-import jsdom, { JSDOM } from 'jsdom';
+import { JSDOM } from 'jsdom';
 
-const resourceLoader = new jsdom.ResourceLoader();
-export const window = new JSDOM('', { resources: resourceLoader }).window;
+export const window = new JSDOM('', { resources: 'usable' }).window;
 export const document = window.document;
 
 // Monkey Path DOM
@@ -78,7 +77,7 @@ export const document = window.document;
   if (!Object.getOwnPropertyDescriptor(global, 'ResizeObserver'))
     Object.defineProperty(global, 'ResizeObserver', { value: _ResizeObserver });
   if (!Object.getOwnPropertyDescriptor(global, 'ShadowRoot'))
-    Object.defineProperty(global, 'ShadowRoot', { value: Object });
+    Object.defineProperty(global, 'ShadowRoot', { value: window.ShadowRoot });
   if (!Object.getOwnPropertyDescriptor(global, 'getComputedStyle'))
     Object.defineProperty(global, 'getComputedStyle', { value: window.getComputedStyle });
   if (!Object.getOwnPropertyDescriptor(global, 'requestAnimationFrame'))
@@ -95,6 +94,15 @@ export const document = window.document;
     Object.defineProperty(global, 'DOMParser', { value: window.DOMParser });
   if (!Object.getOwnPropertyDescriptor(global, 'Node'))
     Object.defineProperty(global, 'Node', { value: window.Node });
+
+  const ctx = window.document.createElement('canvas').getContext('2d');
+  if (!Object.getOwnPropertyDescriptor(global, 'CanvasGradient'))
+    Object.defineProperty(global, 'CanvasGradient', { value: ctx.createLinearGradient(0, 0, 1, 1).constructor });
+  if (!Object.getOwnPropertyDescriptor(global, 'CanvasPattern'))
+    Object.defineProperty(global, 'CanvasPattern', { value: ctx.createPattern(ctx.canvas, 'repeat').constructor });
+
+  if (!Object.getOwnPropertyDescriptor(global, 'createImageBitmap'))
+    Object.defineProperty(global, 'createImageBitmap', { value: async (image) => image });
 
   // Override all remaing properties.
   for (const p of Object.keys(Object.getOwnPropertyDescriptors(window)).filter(p => p.startsWith('HTML')))

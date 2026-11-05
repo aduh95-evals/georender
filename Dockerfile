@@ -1,14 +1,7 @@
-FROM node:18-alpine
+FROM node:24-alpine
 
 RUN apk update && apk upgrade --no-cache
-RUN apk add --no-cache \
-    bash \ 
-    build-base \
-    g++ \
-    cairo-dev \
-    jpeg-dev \
-    pango-dev \
-    giflib-dev
+RUN apk add --no-cache bash
 
 RUN mkdir -p /opt/georender
 WORKDIR /opt/georender
