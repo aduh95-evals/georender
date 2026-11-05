@@ -2,16 +2,24 @@ import GeoJSON from 'ol/format/GeoJSON.js';
 import GPX from 'ol/format/GPX.js';
 import KML from 'ol/format/KML.js';
 import JSZip from 'jszip';
+import * as path from 'path';
 import * as fs from 'fs';
 
 export class Importer {
   async importFile(filename) {
+    if (fs.statSync(filename).isDirectory()) {
+      const d = await fs.promises.opendir(filename);
+      for await (const f of d) {
+        await this.importFile(path.join(f.parentPath, f.name));
+      }
+      return;
+    }
     const f = filename.toLowerCase();
     if (f.endsWith('.geojson')) return await this.importGeoJSON(filename);
     if (f.endsWith('.gpx')) return await this.importGPX(filename);
     if (f.endsWith('.kml')) return await this.importKML(filename);
     if (f.endsWith('.kmz')) return await this.importKMZ(filename);
-    throw new Error("Unsupported file format: " + filename);
+    console.warn(new Error("Unsupported file format: " + filename));
   }
 
   async importGeoJSON(filename) {
