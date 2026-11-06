@@ -14,6 +14,7 @@ export class Renderer {
 
         const width = options.width || defaults.width;
         const height = options.height || defaults.height;
+        const pixelRatio = options.pixelRatio || defaults.pixelRatio;
         const inputFiles = options.in || [];
         const outputFile = options.out || "out.png";
         const tile = defaults.tile[options.tile || 'osm'];
@@ -22,6 +23,7 @@ export class Renderer {
     
         console.log('  width:', width);
         console.log('  height:', height);
+        console.log('  pixel ratio:', pixelRatio);
         console.log('  input files:', inputFiles);
         console.log('  output file:', outputFile);
     
@@ -32,7 +34,7 @@ export class Renderer {
         element.style.height = `${height}px`;
         document.body.appendChild(element);
     
-        const map = new Map({ target: element });
+        const map = new Map({ target: element, pixelRatio });
         map.addLayer(new TileLayer({ source: tile }));
     
         const featureSource = new VectorSource();

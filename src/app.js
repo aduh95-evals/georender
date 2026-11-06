@@ -8,6 +8,7 @@ Usage: georender [options] \n \
   -i, --in <input file>, --in ... - Path to input file (.geojson, .gpx, .kml, .kmz)\n \
   -o, --out <output file> - Path to output file (.png or .jpg)\n \
   -t, --tile <name> - Name of the tile source [osm, otm, esri]\n \
+  -r, --pixel-ratio <ratio> - Output pixels per CSS pixel (default: 2)\n \
 ';
 
 const options = {
@@ -16,6 +17,7 @@ const options = {
   'in': { type: 'string', short: 'i', multiple: true },
   'out': { type: 'string', short: 'o' },
   'tile': { type: 'string', short: 't', default: 'osm' },
+  'pixel-ratio': { type: 'string', short: 'r' },
 };
 
 export class Application {
@@ -60,6 +62,7 @@ export class Application {
       in: args.values.in,
       out: args.values.out,
       tile: args.values.tile,
+      pixelRatio: +args.values['pixel-ratio'],
     });
 
     return 0;
