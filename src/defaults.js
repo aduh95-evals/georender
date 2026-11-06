@@ -7,6 +7,7 @@ const blue    = '#1267FF';
 export const defaults = {
   width: 500,
   height: 500,
+  pixelRatio: 2,
   tile: {
     osm: new OSM({
       url: 'https://cdn.devgrid.net/osm/{z}/{x}/{y}.png',

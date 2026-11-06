@@ -57,6 +57,7 @@ Georender can be run with following options:
 - `-i, --in <input file>` - Path to input file (.geojson, .gpx, .kml, .kmz), supports multiple files
 - `-o, --out <output file>` - Name of the output file (.png, .jpg, .jpeg)
 - `-t, --tile <name>` - Name of the tile source (osm, otm, esri)
+- `-r, --pixel-ratio <ratio>` - Output pixels per CSS pixel, default `2` (e.g. `-w 500 -h 500` produces a 1000×1000 image; use `-r 1` for the previous behaviour)
 
 ## Customization
 You can change default settings by editing `defaults.js`.
